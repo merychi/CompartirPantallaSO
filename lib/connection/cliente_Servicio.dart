@@ -15,12 +15,12 @@ class ClienteServicio {
   static final instance = ClienteServicio._();
 
   // Inicializa la conexión WebSocket
-  init({required String websocketUrl, required String callerId}) {
+  init({required String websocketUrl, required String codeId}) {
     // Crea un nuevo socket WebSocket con la URL y parámetros especificados
     //Se estará iniciando en el puerto 3000 utilizando la IP del cliente remoto.
     socket = io(websocketUrl, {
       "transports": ['websocket'], 
-      "query": {"callerId": callerId} 
+      "query": {"codeId": codeId} 
     });
     return socket; 
   }
@@ -46,10 +46,10 @@ class Cliente2P2 extends StatefulWidget {
 
 // Estado del widget Cliente2P2
 class _Cliente2P2State extends State<Cliente2P2> {
-  bool isAudioOn = true, isVideoOn = true;  // Estados de audio y video
+  bool isAudioOn = false, isVideoOn = true;  // Estados de audio y video
 
   Socket? socket; // Instancia del socket WebSocket
-  String _callerId = ""; // ID del solicitante de transmision
+  String _codeId = ""; // ID del solicitante de transmision
 
   final _remoteRTCVideoRenderer = RTCVideoRenderer(); // Renderizador de video remoto
   RTCPeerConnection? _rtcPeerConnection; // Conexión de pares WebRTC
@@ -61,12 +61,12 @@ class _Cliente2P2State extends State<Cliente2P2> {
     
     _remoteRTCVideoRenderer.initialize(); // Inicializa el renderizador de video remoto
 
-    _callerId = generarStringNumerico(6); // Genera un ID numérico para el que solicita la transmision.
+    _codeId = generarStringNumerico(6); // Genera un ID numérico para el que solicita la transmision.
                                           //Se evita utilizar la IP ya que esta es cambiante según la red.
 
     // Inicializa el servicio cliente WebSocket con la URL y ID del llamador
     socket = ClienteServicio.instance.init(
-        websocketUrl: "http://${widget.ipAddress}:3000", callerId: _callerId);
+        websocketUrl: "http://${widget.ipAddress}:3000", codeId: _codeId);
 
     // Maneja el evento de desconexión del socket WebSocket
     socket!.on("disconnect", (data) {

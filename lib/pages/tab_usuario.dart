@@ -41,6 +41,7 @@ class _UsserComponentState extends State<UsserComponent> {
 // CODIGO del dispositivo actual
   // ignore: unused_field
   String _otherCodigo = ''; // codigo ingresado por el usuario
+  String _usuario = '';
 
   Future<String> _getCodigoAddress() async {
     return Future.value('');
@@ -76,8 +77,6 @@ class _UsserComponentState extends State<UsserComponent> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Implementar la lógica para guardar la Ip ingresada por el usuario
-                _guardarUsuario();
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -92,15 +91,12 @@ class _UsserComponentState extends State<UsserComponent> {
                         21, // Set the font size to 24 to make the text larger
                   ),
                 ),
+                
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  void _guardarUsuario() {
-    // Implementar la lógica para guardar la Ip ingresada por el usuario
   }
 }

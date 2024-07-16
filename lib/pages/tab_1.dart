@@ -145,7 +145,7 @@ class _IpComponentState extends State<IpComponent> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => ServidorP2P(
+                    builder: (_) => ServidorP2P( //INICIAR EL SERVIDOR
                       ipLocal: _deviceIp, // Pasar la IP local obtenida
                     ),
                   ),

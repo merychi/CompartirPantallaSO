@@ -43,18 +43,15 @@ class ServidorP2P extends StatefulWidget {
 
 class _ServidorP2PState extends State<ServidorP2P> {
   String ip = '';
-  bool _isMicOn = false; // Indica si el micrófono está activado o no
-  bool _pantallaCompartidaOn =
-      true; // Indica si la pantalla compartida está activada o no
+  bool _isMicOn = false;             
+  bool _pantallaCompartidaOn = true; 
 
   dynamic incomingSDPOffer; // Oferta de sesión (SDP) entrante
-  Server? _server; // Instancia de un servidor para la comunicación P2P
+  Server? _server;         // Instancia de un servidor para la comunicación P2P
 
-  final _rtcVideoRenderer =
-      RTCVideoRenderer(); // Renderizador de video para WebRTC
-  MediaStream? _mediaStream; // Flujo de medios para la comunicación WebRTC
-  RTCPeerConnection?
-      _rtcPeerConnection; // Conexión que permite conectar dos pares WebRTC
+  final _rtcVideoRenderer =RTCVideoRenderer(); // Renderizador de video para WebRTC
+  MediaStream? _mediaStream;                  // Flujo de medios para la comunicación WebRTC
+  RTCPeerConnection? _rtcPeerConnection;      // Conexión que permite conectar dos pares WebRTC
 
   List<RTCIceCandidate> rtcIceCadidate =
       []; // Lista de candidatos ICE para la negociación WebRTC
@@ -64,17 +61,6 @@ class _ServidorP2PState extends State<ServidorP2P> {
     if (mounted) {
       super.setState(fn);
     }
-  }
-
-  void _toggleMic() {
-    _isMicOn = !_isMicOn; // Alterna el estado del micrófono
-
-    _mediaStream?.getAudioTracks().forEach((track) {
-      track.enabled =
-          _isMicOn; // Habilita o deshabilita los tracks de audio según el estado del micrófono
-    });
-
-    setState(() => {}); // Reconstruye el widget para reflejar los cambios
   }
 
   void _toggleScreenShare() {
@@ -91,19 +77,19 @@ class _ServidorP2PState extends State<ServidorP2P> {
 
   @override
   void initState() {
-    // Inicialización del estado inicial del widget
-    ip = widget.ipLocal; // Asigna la dirección IP local recibida desde el widget padre
 
-    _rtcVideoRenderer.initialize(); // Inicializa el renderizador de video para WebRTC
+    ip = widget.ipLocal;                                    // Asigna la dirección IP local recibida desde el widget padre
 
-    _server = Servidor.instance.init(); // Inicializa el servidor de señalización para WebRTC
+    _rtcVideoRenderer.initialize();                        // Inicializa el renderizador de video para WebRTC
+
+    _server = Servidor.instance.init();                   // Inicializa el servidor de señalización para WebRTC
 
     // Configura la lógica del servidor cuando se establece una conexión
     _server!.on("connection", (socket) {
-      String callerId = socket.handshake['query']
-          ['callerId']; // ID del que solicita la transmision obtenido desde el handshake
-      socket.join(callerId); // El socket se une al ID del callerid
-      Servidor.instance.clientesConectados.add(ip); // Agrega la IP a la lista de clientes conectados
+      String codeId = socket.handshake['query']
+          ['codeId'];                                   // ID del que solicita la transmision obtenido desde el handshake
+      socket.join(codeId);                              // El socket se une al ID del codeId
+      Servidor.instance.clientesConectados.add(ip);    // Agrega la IP a la lista de clientes conectados
 
       print("SERVIDOR: Se ha añadido el cliente $ip a la lista de servidores conectados");
 
@@ -113,7 +99,7 @@ class _ServidorP2PState extends State<ServidorP2P> {
 
         if (mounted) {
           setState(() => incomingSDPOffer = {
-                "callerId": callerId,
+                "codeId": codeId,
                 "sdpOffer": sdpOffer,
               });
 
@@ -138,7 +124,7 @@ class _ServidorP2PState extends State<ServidorP2P> {
     });
 
     _setupPeerConnection(); // Configura la conexión de pares WebRTC
-    super.initState(); // Llama al método initState de la clase base
+    super.initState();      // Llama al método initState de la clase base
   }
 
   // Configura la conexión de pares WebRTC
@@ -196,7 +182,7 @@ class _ServidorP2PState extends State<ServidorP2P> {
     _rtcPeerConnection!.setLocalDescription(answer);
 
     // Envía la respuesta SDP al llamador utilizando el servidor de señalización
-    _server!.to(incomingSDPOffer["callerId"]).emit("transmisionRespuesta", {
+    _server!.to(incomingSDPOffer["codeId"]).emit("transmisionRespuesta", {
       "callee": '1',
       "sdpAnswer": answer.toMap(),
     });
