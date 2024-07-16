@@ -19,7 +19,7 @@
 
 
     <application
-        android:label="Copied Screen"
+        android:label="Remote Spies"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

@@ -1,3 +1,6 @@
+/* ARCHIVO: ARCHIVO PRINCIPAL DE LA APLICACIÓN*/
+
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,8 +45,20 @@ Future<void> initializeService() async {
   }
 }
 
+ void updateForegroundNotification(ServiceInstance service) async {
+  if (service is AndroidServiceInstance) {
+    if (await service.isForegroundService()) {
+      service.setForegroundNotificationInfo(
+        title: "Hoy hace un buen día",
+        content: "Un muy lindo día",
+      );
+    }
+  }
+}
+
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
+  
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
       service.setAsForegroundService();
@@ -51,12 +66,15 @@ void onStart(ServiceInstance service) async {
 
     service.on('setAsBackground').listen((event) {
       service.setAsBackgroundService();
+      updateForegroundNotification(service);
     });
   }
 
   service.on('stopService').listen((event) {
     service.stopSelf();
   });
+
+ 
 
   service.invoke('setAsForeground');
 }

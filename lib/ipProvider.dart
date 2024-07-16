@@ -1,3 +1,7 @@
+/* ARCHIVO IPPROVIDER: PERMITE ACTUALIZAR EN TIEMPO REAL LA LISTA 
+DE SERVIDORES A LOS QUE HA INGRESADO EL CLIENTE PARA OBSERVAR SU PANTALLA.
+*/
+
 import 'package:flutter/material.dart';
 
 class IpProvider with ChangeNotifier {
